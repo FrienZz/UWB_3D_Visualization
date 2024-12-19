@@ -25,18 +25,19 @@ public class CameraSystem : MonoBehaviour
         HandleCameraMovement();
         HandleCameraMovementDragPan();
         HandleCameraRotation();
+        HandleCameraZoom();
     }
 
     private void HandleCameraMovement()
     {
         Vector3 inputDir = new Vector3(0, 0, 0);
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f) inputDir.z = +10f;
-        if (Input.GetAxis("Mouse ScrollWheel") < 0f) inputDir.z = -10f;
         if (Input.GetKey(KeyCode.A)) inputDir.x = -1f;
         if (Input.GetKey(KeyCode.D)) inputDir.x = +1f;
+        if (Input.GetKey(KeyCode.W)) inputDir.y = +1f;
+        if (Input.GetKey(KeyCode.S)) inputDir.y = -1f;
 
 
-        Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;
+        Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x + transform.up * inputDir.y; ;
 
         float moveSpeed = 30f;
         transform.position += moveDir * moveSpeed * Time.deltaTime;
@@ -78,14 +79,13 @@ public class CameraSystem : MonoBehaviour
 
             float dragPanSpeed = 0.5f;
             inputDir.x = mouseMovementDelta.x * dragPanSpeed;
-            inputDir.y = mouseMovementDelta.y * dragPanSpeed;
             inputDir.z = mouseMovementDelta.y * dragPanSpeed;
 
 
             lastMousePosition = Input.mousePosition;
         }
 
-        Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x + transform.up * inputDir.y;
+        Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;
 
         float moveSpeed = 30f;
         transform.position += moveDir * moveSpeed * Time.deltaTime;
@@ -100,6 +100,20 @@ public class CameraSystem : MonoBehaviour
         float rotateSpeed = 200f;
         transform.eulerAngles += new Vector3(0, rotateDir * rotateSpeed * Time.deltaTime, 0);
     }
+
+    private void HandleCameraZoom()
+    {
+    
+        Vector3 inputDir = new Vector3(0, 0, 0);
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f) inputDir.z = +10f;
+        if (Input.GetAxis("Mouse ScrollWheel") < 0f) inputDir.z = -10f;
+
+        Vector3 moveDir = transform.forward * inputDir.z;
+
+        float moveSpeed = 30f;
+        transform.position += moveDir * moveSpeed * Time.deltaTime;
+    }
+
 
     private void ActivateEdgeScrolling()
     {
