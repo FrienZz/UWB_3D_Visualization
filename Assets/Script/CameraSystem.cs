@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraSystem : MonoBehaviour
@@ -8,6 +9,7 @@ public class CameraSystem : MonoBehaviour
     private bool useEdgeScrolling = false;
     private bool dragPanMoveActive;
     private Vector3 lastMousePosition;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -100,7 +102,6 @@ public class CameraSystem : MonoBehaviour
         float rotateSpeed = 200f;
         transform.eulerAngles += new Vector3(0, rotateDir * rotateSpeed * Time.deltaTime, 0);
     }
-
     private void HandleCameraZoom()
     {
     

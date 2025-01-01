@@ -12,26 +12,29 @@ using static System.Net.WebRequestMethods;
 
 public class TagController : MonoBehaviour
 {
-    private string URL = "https://project.nwisaku.xyz/api/GetTagMeasureLogs/6";
-    private string token = "1|01m3NwIqSrIBigTX5YHmS0NniUn2knlLyNOz4TZWe9317dd7";
+    private string URL = "https://project.nwisaku.xyz/api/GetTagMeasureLogs/7";
+    private string token = "39|mR3QkbQolhynD9PBgzZ0QFwmkWuSesW03m95TR9Tde089536";
 
    
     public TextMeshProUGUI [] Distance;
+    public TextMeshProUGUI[] Anchor_Position;
     public TextMeshProUGUI PositionTag ;
     public Transform[] anchors;
     private bool activate = false;
+    private bool showtext = true;
+    private float scale = (float)8 / 1000 ;
 
     // Start is called before the first frame update
     void Start()
     {
-        //transform.position = new Vector3(6, 2, -13);
         StartCoroutine(GetData());
     }
 
     // Update is called once per frame
     void Update()
     {
-        ActivateUWB();
+        ActivateSimulation();
+        ShowText();
     }
 
     IEnumerator GetData()
@@ -44,25 +47,26 @@ public class TagController : MonoBehaviour
         {
             if (activate)
             {
+
                 using (UnityWebRequest request = UnityWebRequest.Get(URL))
                 {
 
                     request.SetRequestHeader("Authorization", "Bearer " + token);
                     yield return request.SendWebRequest();
 
-
-                    if (request.result == UnityWebRequest.Result.ConnectionError)
+                    if (request.result != UnityWebRequest.Result.Success)
+                    {
                         Debug.LogError(request.error);
+                        yield break;
+                    }
                     else
                     {
                         string json = request.downloadHandler.text;
                         SimpleJSON.JSONNode data = SimpleJSON.JSON.Parse(json);
-
-                        //Debug.Log(data["data"][3]["timestamp"]);
                         
                         for(int i = 0;i < Distance.Length; i++)
-                        {
-                            Distance[i].text = "(Distance : " + data["data"][i]["distance"] + " m)";
+                        {     
+                            Distance[i].text = "(Distance : " + data["data"][i]["distance"] + " mm)";
                             distance[i] = data["data"][i]["distance"];
                         }
                         
@@ -73,11 +77,16 @@ public class TagController : MonoBehaviour
 
                 // {x, y, z, r} units:milimeter
                 List<float[]> position_anchor = new List<float[]> {
-                new float[4] { 19.6184f, 10.5662f, -51.963f, distance[0] }, // Anchor1 : x1,y1,z1,r1
-                new float[4] { 519.618f, 876.596f, -51.963f, distance[1] }, // Anchor2 : x2,y2,z2,r2
-                new float[4] { 1019.62f, 10.5648f, -51.963f, distance[2] }, // Anchor3 : x3,y3,z3,r3
-                new float[4] { 519.618f, 299.242f, 764.531f, distance[3] }  // Anchor4 : x4,y4,z4,r4
-            };
+                    new float[4] { 19.6184f, 10.5662f, -51.963f, distance[0] }, // Anchor1 : x1,y1,z1,r1
+                    new float[4] { 1019.62f, 10.5648f, -51.963f, distance[1] }, // Anchor2 : x2,y2,z2,r2
+                    new float[4] { 519.618f, 876.596f, -51.963f, distance[2] }, // Anchor3 : x3,y3,z3,r3
+                    new float[4] { 519.618f, 299.242f, 764.531f, distance[3] }  // Anchor4 : x4,y4,z4,r4
+                };
+
+                for(int i = 0; i < Anchor_Position.Length; i++)
+                {
+                    Anchor_Position[i].text = "x : " + position_anchor[i][0] + "  " + "y : " + position_anchor[i][1] + "  " + "z : " + position_anchor[i][2];
+                }
 
                 float[,] position = CalculatePosition(position_anchor[0], position_anchor[1], position_anchor[2], position_anchor[3]);
 
@@ -88,23 +97,37 @@ public class TagController : MonoBehaviour
 
                 PositionTag.text = "x : " + positionX + "  mm\n\n" + "y : " + positionY + "  mm\n\n" + "z : " + positionZ + "  mm";
 
+                
+                float real_originX = 19.6184f, real_originY = 10.5648f, real_originZ = -51.963f , unity_originZ = -10;
+                transform.position = new Vector3((positionX - real_originX)*scale, (positionZ + real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
+
+                yield return new WaitForSeconds(20f);
             }
-            yield return new WaitForSeconds(1f);
+
+            yield return new WaitForSeconds(0.1f);
         }
         
     }
- 
-    private void ActivateUWB()
+
+    private void ShowText()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            showtext = !showtext;
+        }
+    }
+
+    private void ActivateSimulation()
     {
         if (Input.GetKeyDown(KeyCode.O))
         {
             if (!activate)
             {
-                Debug.Log("UWB is now running");
+                Debug.Log("Simulation is now running");
             }
             else
             {
-                Debug.Log("UWB has stopped working");
+                Debug.Log("Simulation has stopped working");
             }
             activate = !activate;
         }
@@ -143,7 +166,7 @@ public class TagController : MonoBehaviour
             set_of_position.Add(NewtonRapsonMethod(inv_matrix, initial_func_matrix, set_anchor, initial_guess));
         }
         
-        /*
+        /**
         for(int i = 0;i < 4; i++)
         {
             for (int j = 0; j < 3; j++)
@@ -152,7 +175,7 @@ public class TagController : MonoBehaviour
             }
             Debug.Log("\n");
         }
-        */
+        **/
 
 
         float x_mean = 0 , y_mean = 0, z_mean = 0;
@@ -197,7 +220,7 @@ public class TagController : MonoBehaviour
             }
             current_round = result;
             current_matrix = InverseJacobianMatrix3x3(set_anchor, current_round);
-            current_func = FindFunctionValue(set_anchor, result);
+            current_func = FindFunctionValue(set_anchor, current_round);
             multiply_matrix = Matrix3x3_multiplication(current_matrix, current_func);
         }
 
