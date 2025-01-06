@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using static System.Net.WebRequestMethods;
@@ -13,7 +14,7 @@ using static System.Net.WebRequestMethods;
 public class TagController : MonoBehaviour
 {
     private string URL = "https://project.nwisaku.xyz/api/GetTagMeasureLogs/7";
-    private string token = "39|mR3QkbQolhynD9PBgzZ0QFwmkWuSesW03m95TR9Tde089536";
+    private string token ;
 
    
     public TextMeshProUGUI [] Distance;
@@ -27,6 +28,7 @@ public class TagController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        token = StateTokenController.token;
         StartCoroutine(GetData());
     }
 
@@ -34,7 +36,6 @@ public class TagController : MonoBehaviour
     void Update()
     {
         ActivateSimulation();
-        ShowText();
     }
 
     IEnumerator GetData()
@@ -42,7 +43,7 @@ public class TagController : MonoBehaviour
 
         float[] distance = new float[4];
 
-        
+        Debug.Log(token);
         while (true)
         {
             if (activate)
@@ -99,7 +100,7 @@ public class TagController : MonoBehaviour
 
                 
                 float real_originX = 19.6184f, real_originY = 10.5648f, real_originZ = -51.963f , unity_originZ = -10;
-                transform.position = new Vector3((positionX - real_originX)*scale, (positionZ + real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
+                transform.position = new Vector3((positionX - real_originX)*scale, (positionZ - real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
 
                 yield return new WaitForSeconds(20f);
             }
