@@ -102,7 +102,6 @@ public class TagController : MonoBehaviour
                 float real_originX = 19.6184f, real_originY = 10.5648f, real_originZ = -51.963f , unity_originZ = -10;
                 transform.position = new Vector3((positionX - real_originX)*scale, (positionZ - real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
 
-                yield return new WaitForSeconds(20f);
                 yield return new WaitForSeconds(5f);
             }
 
