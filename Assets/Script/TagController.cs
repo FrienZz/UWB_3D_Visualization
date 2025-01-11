@@ -43,7 +43,7 @@ public class TagController : MonoBehaviour
 
         float[] distance = new float[4];
 
-        Debug.Log(token);
+        //Debug.Log(token);
         while (true)
         {
             if (activate)
@@ -103,6 +103,7 @@ public class TagController : MonoBehaviour
                 transform.position = new Vector3((positionX - real_originX)*scale, (positionZ - real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
 
                 yield return new WaitForSeconds(20f);
+                yield return new WaitForSeconds(5f);
             }
 
             yield return new WaitForSeconds(0.1f);
@@ -167,17 +168,6 @@ public class TagController : MonoBehaviour
             set_of_position.Add(NewtonRapsonMethod(inv_matrix, initial_func_matrix, set_anchor, initial_guess));
         }
         
-        /**
-        for(int i = 0;i < 4; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                Debug.Log(Convert.ToSingle(Math.Round(set_of_position.ElementAt(i)[j, 0], 3)));
-            }
-            Debug.Log("\n");
-        }
-        **/
-
 
         float x_mean = 0 , y_mean = 0, z_mean = 0;
         foreach(float[,] pos in set_of_position)
@@ -224,6 +214,10 @@ public class TagController : MonoBehaviour
             current_func = FindFunctionValue(set_anchor, current_round);
             multiply_matrix = Matrix3x3_multiplication(current_matrix, current_func);
         }
+
+        
+        
+
 
         return result;
     }

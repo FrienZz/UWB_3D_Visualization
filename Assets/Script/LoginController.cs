@@ -67,7 +67,7 @@ public class LoginController : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(request.error);
+                Debug.Log(request.error);
                 IncorrectPasswordErrorText.text = "Incorrect username or password.";
                 yield break;
             }

@@ -87,7 +87,7 @@ public class RegisterController : MonoBehaviour
             yield return request.SendWebRequest();
             if(request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(request.error);
+                Debug.Log(request.error);
                 yield break;
             }
             else
