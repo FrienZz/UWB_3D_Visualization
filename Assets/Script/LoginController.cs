@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
 using UnityEditor.PackageManager.Requests;
+using UnityEngine.UI;
 
 public class LoginController : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class LoginController : MonoBehaviour
     public TextMeshProUGUI UsernameErrorText;
     public TextMeshProUGUI PasswordErrorText;
     public TextMeshProUGUI IncorrectPasswordErrorText;
+    public Image ErrorBg;
+
 
     // Start is called before the first frame update
     void Start()
@@ -58,7 +61,8 @@ public class LoginController : MonoBehaviour
         {
             yield break;
         }
-        
+
+     
         WWWForm form = new WWWForm();
         form.AddField("name", userName);
         form.AddField("secret", passWord);
@@ -68,6 +72,7 @@ public class LoginController : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.Log(request.error);
+                ErrorBg.GetComponent<Image>().color = new Color32(255, 215, 210, 255); //Red Color Message
                 IncorrectPasswordErrorText.text = "Incorrect username or password.";
                 yield break;
             }
@@ -80,7 +85,8 @@ public class LoginController : MonoBehaviour
                 SceneManager.LoadScene("Simulation");
             }
         }
-       
+ 
+
     }
 
 }

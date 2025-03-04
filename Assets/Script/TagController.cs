@@ -21,9 +21,9 @@ public class TagController : MonoBehaviour
     public TextMeshProUGUI[] Anchor_Position;
     public TextMeshProUGUI PositionTag ;
     public Transform[] anchors;
-    private bool activate = false;
-    private bool showtext = true;
-    private float scale = (float)8 / 1000 ;
+    private float scale = (float)0.008 ;
+    private int t_threshold = 1;
+    private int c_threshold = 20;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +35,6 @@ public class TagController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ActivateSimulation();
     }
 
     IEnumerator GetData()
@@ -43,131 +42,130 @@ public class TagController : MonoBehaviour
 
         float[] distance = new float[4];
 
-        //Debug.Log(token);
         while (true)
         {
-            if (activate)
+           
+            using (UnityWebRequest request = UnityWebRequest.Get(URL))
             {
 
-                using (UnityWebRequest request = UnityWebRequest.Get(URL))
+                request.SetRequestHeader("Authorization", "Bearer " + token);
+                yield return request.SendWebRequest();
+
+                if (request.result != UnityWebRequest.Result.Success)
                 {
+                    Debug.LogError(request.error);
+                    yield break;
+                }
+                else
+                {
+                    string json = request.downloadHandler.text;
+                    SimpleJSON.JSONNode data = SimpleJSON.JSON.Parse(json);
 
-                    request.SetRequestHeader("Authorization", "Bearer " + token);
-                    yield return request.SendWebRequest();
-
-                    if (request.result != UnityWebRequest.Result.Success)
+                    for (int i = 0; i < Distance.Length; i++)
                     {
-                        Debug.LogError(request.error);
-                        yield break;
-                    }
-                    else
-                    {
-                        string json = request.downloadHandler.text;
-                        SimpleJSON.JSONNode data = SimpleJSON.JSON.Parse(json);
-                        
-                        for(int i = 0;i < Distance.Length; i++)
-                        {     
-                            Distance[i].text = "(Distance : " + data["data"][i]["distance"] + " mm)";
-                            distance[i] = data["data"][i]["distance"];
+                    int currentAnchor = data["data"][i]["anchor"];
+                    float currentDistance = data["data"][i]["distance"];
+                    string distanceText = "(Distance : " + currentDistance + " mm)";
+                    int distanceIndex = -1;
+                        switch (currentAnchor)
+                        {
+                            case 2: 
+                                distanceIndex = 0;
+                                break;
+                            case 3: 
+                                distanceIndex = 1;
+                                break;
+                            case 4: 
+                                distanceIndex = 2;
+                                break;
+                            case 5: 
+                                distanceIndex = 3;
+                                break;
+                            default:
+                                break;
                         }
-                        
-                        
+                    distance[distanceIndex] = currentDistance;
+                    Distance[distanceIndex].text = distanceText ;
                     }
-
+                                    
                 }
 
-                // {x, y, z, r} units:milimeter
-                List<float[]> position_anchor = new List<float[]> {
-                    new float[4] { 19.6184f, 10.5662f, -51.963f, distance[0] }, // Anchor1 : x1,y1,z1,r1
-                    new float[4] { 1019.62f, 10.5648f, -51.963f, distance[1] }, // Anchor2 : x2,y2,z2,r2
-                    new float[4] { 519.618f, 876.596f, -51.963f, distance[2] }, // Anchor3 : x3,y3,z3,r3
-                    new float[4] { 519.618f, 299.242f, 764.531f, distance[3] }  // Anchor4 : x4,y4,z4,r4
-                };
+            }
 
-                for(int i = 0; i < Anchor_Position.Length; i++)
-                {
-                    Anchor_Position[i].text = "x : " + position_anchor[i][0] + "  " + "y : " + position_anchor[i][1] + "  " + "z : " + position_anchor[i][2];
-                }
+            // {x, y, z, r} units:milimeter
+            List<float[]> position_anchor = new List<float[]> {
+                new float[4] { 0, 0, 0, distance[0] },                  // AnchorA : x1,y1,z1,r1
+                new float[4] { 1000, 0, 0, distance[1] },               // AnchorB : x2,y2,z2,r2
+                new float[4] { 500, 866.031f, 0, distance[2] },         // AnchorC : x3,y3,z3,r3
+                new float[4] { 500, 288.677f, 816.494f, distance[3] }  // AnchorD : x4,y4,z4,r4
+            };
 
-                float[,] position = CalculatePosition(position_anchor[0], position_anchor[1], position_anchor[2], position_anchor[3]);
+            for (int i = 0; i < Anchor_Position.Length; i++)
+            {
+                Anchor_Position[i].text = "x : " + position_anchor[i][0] + "  " + "y : " + position_anchor[i][1] + "  " + "z : " + position_anchor[i][2];
+            }
 
-                //Round to 3 decimal places
-                float positionX = Convert.ToSingle(Math.Round(position[0, 0], 3));
-                float positionY = Convert.ToSingle(Math.Round(position[1, 0], 3));
-                float positionZ = Convert.ToSingle(Math.Round(position[2, 0], 3));
+            float[,] position = CalculatePosition(position_anchor[0], position_anchor[1], position_anchor[2], position_anchor[3]);
 
-                PositionTag.text = "x : " + positionX + "  mm\n\n" + "y : " + positionY + "  mm\n\n" + "z : " + positionZ + "  mm";
+            //Round to 3 decimal places
+            float positionX = Convert.ToSingle(Math.Round(position[0, 0], 3));
+            float positionY = Convert.ToSingle(Math.Round(position[1, 0], 3));
+            float positionZ = Convert.ToSingle(Math.Round(position[2, 0], 3));
 
+            PositionTag.text = "x : " + positionX + "  mm\n\n" + "y : " + positionY + "  mm\n\n" + "z : " + positionZ + "  mm";
+
+            float unity_originZ = -10;
+            transform.position = new Vector3(positionX  * scale, positionZ * scale, unity_originZ - (positionY * scale));
+
+            yield return new WaitForSeconds(1f);
+
+
+        }
                 
-                float real_originX = 19.6184f, real_originY = 10.5648f, real_originZ = -51.963f , unity_originZ = -10;
-                transform.position = new Vector3((positionX - real_originX)*scale, (positionZ - real_originZ) * scale, (unity_originZ - ((positionY - real_originY) * scale)));
-
-                yield return new WaitForSeconds(5f);
-            }
-
-            yield return new WaitForSeconds(0.1f);
-        }
-        
+             
     }
-
-    private void ShowText()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            showtext = !showtext;
-        }
-    }
-
-    private void ActivateSimulation()
-    {
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            if (!activate)
-            {
-                Debug.Log("Simulation is now running");
-            }
-            else
-            {
-                Debug.Log("Simulation has stopped working");
-            }
-            activate = !activate;
-        }
-    }
-
 
 
     /*
      * Parameter:
-     * a1 (array): anchor1 position(x1,y1,z1,r1)
-     * a2 (array): anchor2 position(x2,y2,z2,r2)  
-     * a3 (array): anchor3 position(x3,y3,z3,r3)  
-     * a4 (array): anchor4 position(x4,y4,z4,r4)  
+     * a1 (array): anchorA position(x1,y1,z1,r1)
+     * a2 (array): anchorB position(x2,y2,z2,r2)  
+     * a3 (array): anchorC position(x3,y3,z3,r3)  
+     * a4 (array): anchorD position(x4,y4,z4,r4)  
      * 
      * Return:
      * 2d-array : the estimate position(x,y,z) from tag refer to all set of anchor
     */
     private float[,] CalculatePosition(float[] a1, float[] a2, float[] a3, float[] a4)
-    {
+     {
 
         // All Set of Anchor nC3
         List<List<float[]>> all_set_anchor = new List<List<float[]>> {
-            new List<float[]> { a1, a2, a3 }, // Set of Anchor 1,2,3
-            new List<float[]> { a1, a2, a4 }, // Set of Anchor 1,2,4
-            new List<float[]> { a1, a3, a4 }, // Set of Anchor 1,3,4
-            new List<float[]> { a2, a3, a4 }  // Set of Anchor 2,3,4
+            new List<float[]> { a1, a2, a3 }, // Set of Anchor A,B,C
+            new List<float[]> { a1, a2, a4 }, // Set of Anchor A,B,D
+            new List<float[]> { a1, a3, a4 }, // Set of Anchor A,C,D
+            new List<float[]> { a2, a3, a4 }  // Set of Anchor B,C,D
         };
+
         
-        float[,] initial_guess = new float[3, 1] { { 0 }, { 0 }, { 0 } };
+        float[,] initial_guess = new float[3, 1] { { 1 }, { 1 }, { 1 } };
         List < float[,]> set_of_position = new List<float[,]>();
 
+        int i = 0;
         foreach(List<float[]> set_anchor in all_set_anchor)
         {
             float[,] inv_matrix = InverseJacobianMatrix3x3(set_anchor, initial_guess);
             float[,] initial_func_matrix = FindFunctionValue(set_anchor, initial_guess);
             set_of_position.Add(NewtonRapsonMethod(inv_matrix, initial_func_matrix, set_anchor, initial_guess));
+            initial_guess = (float[,])set_of_position[i].Clone(); //Do chaining method
+            if(i == 3) // Chain last init_guess to first init_guess
+            {
+                set_of_position[0] = NewtonRapsonMethod(inv_matrix, initial_func_matrix, set_anchor, initial_guess);
+            }
+            i++;
         }
-        
 
+      
         float x_mean = 0 , y_mean = 0, z_mean = 0;
         foreach(float[,] pos in set_of_position)
         {
@@ -180,7 +178,7 @@ public class TagController : MonoBehaviour
 
 
         return final_result;
-    }
+      }
 
     /*
      * Parameter:
@@ -195,30 +193,37 @@ public class TagController : MonoBehaviour
     private float[,] NewtonRapsonMethod(float [,] inv_matrix , float[,] initial_func_matrix, List<float[]> set_anchor,float [,] initial_guess)
     {
 
-        float[,] result = new float[3, 1];
-        float[,] current_matrix = inv_matrix;
-        float[,] current_func = initial_func_matrix;
-        float[,] current_round = initial_guess;
+        float[,] current_round = new float[3, 1];
+        float[,] current_matrix = (float[,])inv_matrix.Clone();
+        float[,] current_func = (float[,])initial_func_matrix.Clone();
+        float[,] guess = (float[,])initial_guess.Clone();
         float[,] multiply_matrix = Matrix3x3_multiplication(inv_matrix, current_func);
 
         for (int i = 0; i < 7; i++) 
         {
-            for (int j = 0; j < 3; j++)
+            //Global Newton with 4C3
+            float a = 1;
+            for (int k = 0; k < c_threshold; k++)
             {
-                result[j, 0] = current_round[j, 0] - multiply_matrix[j, 0];
-                //Debug.Log(result[j, 0]);
+                for (int j = 0; j < 3; j++)
+                {
+                    current_round[j, 0] = guess[j, 0] - (a * multiply_matrix[j, 0]);
+                }
+                int fout_is_less_than_fin = Enumerable.Range(0, 3).Sum(i => Math.Abs(FindFunctionValue(set_anchor, current_round)[i, 0]) < Math.Abs(FindFunctionValue(set_anchor,guess)[i, 0]) ? 1 : 0);
+                if (fout_is_less_than_fin >= t_threshold)
+                {
+                    Array.Copy(current_round, guess, guess.Length);
+                }
+                inv_matrix = InverseJacobianMatrix3x3(set_anchor, guess);
+                current_func = FindFunctionValue(set_anchor, guess);
+                multiply_matrix = Matrix3x3_multiplication(inv_matrix, current_func);
+                if (fout_is_less_than_fin >= t_threshold) break;
+                a /= 2;
             }
-            current_round = result;
-            current_matrix = InverseJacobianMatrix3x3(set_anchor, current_round);
-            current_func = FindFunctionValue(set_anchor, current_round);
-            multiply_matrix = Matrix3x3_multiplication(current_matrix, current_func);
+
         }
-
-        
-        
-
-
-        return result;
+     
+        return guess;
     }
 
     /*
@@ -237,7 +242,7 @@ public class TagController : MonoBehaviour
         {
             func_val[i, 0] = Convert.ToSingle(Math.Pow(initial_guess[0, 0] - set_anchor.ElementAt(i)[0], 2) + Math.Pow(initial_guess[1, 0] - set_anchor.ElementAt(i)[1], 2) + Math.Pow(initial_guess[2, 0] - set_anchor.ElementAt(i)[2], 2) - Math.Pow(set_anchor.ElementAt(i)[3],2));
         }
-
+       
         return func_val ;
     }
 
@@ -276,7 +281,7 @@ public class TagController : MonoBehaviour
         {
             det += (matrix[0, i] * matrix[1, (i + 1) % 3] * matrix[2, (i + 2) % 3] - matrix[2,i] * matrix[1,(i + 1) % 3] * matrix[0,(i + 2) % 3]);
         }
-
+     
         return det ;
     }
 
@@ -290,7 +295,7 @@ public class TagController : MonoBehaviour
     private float DeterminantMatrix2x2(float[,] matrix)
     {
         float det = matrix[0, 0] * matrix[1, 1] - matrix[1, 0] * matrix[0,1];
-
+        
         return det;
     }
 
@@ -360,7 +365,7 @@ public class TagController : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                jaco_matrix[i, j] = 2 * (initial_guess[j,0] - input.ElementAt(i)[j]);
+                jaco_matrix[i, j] = 2 * (initial_guess[j,0] - input.ElementAt(i)[j]) ;
             }
             
         }
@@ -385,10 +390,12 @@ public class TagController : MonoBehaviour
 
         float det = DeterminantMatrix3x3(t_matrix);
         
-        if (Math.Abs(det) < 1e-6)
+       
+        if (Math.Abs(det) == 0)
         {
             throw new InvalidOperationException("Matrix is not invertible.");
         }
+        
 
         //cofactor matrix2*2 for each row and column
         for (int i = 0; i < 3; i++)

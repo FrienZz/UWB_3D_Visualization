@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 50bf15468c19e0e40b5bf26662770a34, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 53703595}
   - component: {fileID: 53703596}
   m_Layer: 5
-  m_Name: Anchor4Position
+  m_Name: AnchorD_Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,7 +269,7 @@ GameObject:
   - component: {fileID: 199682952}
   - component: {fileID: 199682951}
   m_Layer: 0
-  m_Name: Anchor2
+  m_Name: AnchorB
   m_TagString: Player
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -373,7 +373,7 @@ GameObject:
   - component: {fileID: 202437427}
   - component: {fileID: 202437426}
   m_Layer: 5
-  m_Name: Anchor3Distance
+  m_Name: AnchorC_Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -508,7 +508,7 @@ GameObject:
   - component: {fileID: 206442509}
   - component: {fileID: 206442508}
   m_Layer: 0
-  m_Name: Anchor4
+  m_Name: AnchorD
   m_TagString: Player
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -612,7 +612,7 @@ GameObject:
   - component: {fileID: 610969426}
   - component: {fileID: 610969427}
   m_Layer: 5
-  m_Name: Anchor2Position
+  m_Name: AnchorB_Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -801,8 +801,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255388
-  m_fontColor: {r: 0.10980392, g: 1, b: 0, a: 1}
+    rgba: 4289877247
+  m_fontColor: {r: 1, g: 0.32941177, b: 0.69803923, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -881,7 +881,7 @@ GameObject:
   - component: {fileID: 660894687}
   - component: {fileID: 660894688}
   m_Layer: 5
-  m_Name: Anchor3Position
+  m_Name: AnchorC_Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1109,7 +1109,7 @@ GameObject:
   - component: {fileID: 957329383}
   - component: {fileID: 957329382}
   m_Layer: 5
-  m_Name: Anchor1Text
+  m_Name: AnchorAText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Anchor1
+  m_text: AnchorA
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5c24d8e32f65634408ca907266b8f636, type: 2}
   m_sharedMaterial: {fileID: -2112629583471552008, guid: 5c24d8e32f65634408ca907266b8f636, type: 2}
@@ -1504,7 +1504,7 @@ GameObject:
   - component: {fileID: 1021060444}
   - component: {fileID: 1021060443}
   m_Layer: 5
-  m_Name: Anchor3Text
+  m_Name: AnchorCText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1551,7 +1551,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Anchor3
+  m_text: 'AnchorC
 
 '
   m_isRightToLeft: 0
@@ -2039,7 +2039,7 @@ GameObject:
   - component: {fileID: 1287271353}
   - component: {fileID: 1287271352}
   m_Layer: 5
-  m_Name: Anchor2Distance
+  m_Name: AnchorB_Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2241,7 +2241,7 @@ GameObject:
   - component: {fileID: 1455654892}
   - component: {fileID: 1455654891}
   m_Layer: 5
-  m_Name: Anchor4Distance
+  m_Name: AnchorD_Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2376,7 +2376,7 @@ GameObject:
   - component: {fileID: 1486786740}
   - component: {fileID: 1486786739}
   m_Layer: 0
-  m_Name: Anchor1
+  m_Name: AnchorA
   m_TagString: Player
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2481,7 +2481,7 @@ GameObject:
   - component: {fileID: 1510041617}
   - component: {fileID: 1510041616}
   m_Layer: 0
-  m_Name: Anchor3
+  m_Name: AnchorC
   m_TagString: Player
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2719,7 +2719,7 @@ GameObject:
   - component: {fileID: 1616565644}
   - component: {fileID: 1616565643}
   m_Layer: 5
-  m_Name: Anchor2Text
+  m_Name: AnchorBText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2766,7 +2766,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Anchor2
+  m_text: AnchorB
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5c24d8e32f65634408ca907266b8f636, type: 2}
   m_sharedMaterial: {fileID: -2112629583471552008, guid: 5c24d8e32f65634408ca907266b8f636, type: 2}
@@ -2855,7 +2855,7 @@ GameObject:
   - component: {fileID: 1629103727}
   - component: {fileID: 1629103726}
   m_Layer: 5
-  m_Name: Anchor1Distance
+  m_Name: AnchorA_Distance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2989,7 +2989,7 @@ GameObject:
   - component: {fileID: 1688512710}
   - component: {fileID: 1688512711}
   m_Layer: 5
-  m_Name: Anchor1Position
+  m_Name: AnchorA_Position
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3123,7 +3123,7 @@ GameObject:
   - component: {fileID: 1969627721}
   - component: {fileID: 1969627720}
   m_Layer: 5
-  m_Name: Anchor4Text
+  m_Name: AnchorDText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3170,7 +3170,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Anchor4
+  m_text: 'AnchorD
 
 '
   m_isRightToLeft: 0
