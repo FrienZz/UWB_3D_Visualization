@@ -39,7 +39,7 @@ public class TagController : MonoBehaviour
 
     IEnumerator GetData()
     {
-
+        
         float[] distance = new float[4];
 
         while (true)
@@ -63,10 +63,10 @@ public class TagController : MonoBehaviour
 
                     for (int i = 0; i < Distance.Length; i++)
                     {
-                    int currentAnchor = data["data"][i]["anchor"];
-                    float currentDistance = data["data"][i]["distance"];
-                    string distanceText = "(Distance : " + currentDistance + " mm)";
-                    int distanceIndex = -1;
+                        int currentAnchor = data["data"][i]["anchor"];
+                        float currentDistance = data["data"][i]["distance"];
+                        string distanceText = "(Distance : " + currentDistance + " mm)";
+                        int distanceIndex = -1;
                         switch (currentAnchor)
                         {
                             case 2: 
@@ -84,8 +84,8 @@ public class TagController : MonoBehaviour
                             default:
                                 break;
                         }
-                    distance[distanceIndex] = currentDistance;
-                    Distance[distanceIndex].text = distanceText ;
+                        distance[distanceIndex] = currentDistance;
+                        Distance[distanceIndex].text = distanceText ;
                     }
                                     
                 }
@@ -94,9 +94,9 @@ public class TagController : MonoBehaviour
 
             // {x, y, z, r} units:milimeter
             List<float[]> position_anchor = new List<float[]> {
-                new float[4] { 0, 0, 0, distance[0] },                  // AnchorA : x1,y1,z1,r1
-                new float[4] { 1000, 0, 0, distance[1] },               // AnchorB : x2,y2,z2,r2
-                new float[4] { 500, 866.031f, 0, distance[2] },         // AnchorC : x3,y3,z3,r3
+                new float[4] { 0, 0, 0, distance[0] },                 // AnchorA : x1,y1,z1,r1
+                new float[4] { 1000, 0, 0, distance[1] },              // AnchorB : x2,y2,z2,r2
+                new float[4] { 500, 866.031f, 0, distance[2] },        // AnchorC : x3,y3,z3,r3
                 new float[4] { 500, 288.677f, 816.494f, distance[3] }  // AnchorD : x4,y4,z4,r4
             };
 
@@ -121,8 +121,7 @@ public class TagController : MonoBehaviour
 
 
         }
-                
-             
+        
     }
 
 
