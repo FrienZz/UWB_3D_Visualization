@@ -82,6 +82,7 @@ public class TagController : MonoBehaviour
                                 distanceIndex = 3;
                                 break;
                             default:
+                                Debug.LogError("Anchor number does not exist");
                                 break;
                         }
                         distance[distanceIndex] = currentDistance;
@@ -121,7 +122,7 @@ public class TagController : MonoBehaviour
 
 
         }
-        
+      
     }
 
 
