@@ -13,7 +13,7 @@ public class LoginController : MonoBehaviour
     public TMP_InputField accountPassWord;
     public TextMeshProUGUI UsernameErrorText;
     public TextMeshProUGUI PasswordErrorText;
-    public TextMeshProUGUI IncorrectPasswordErrorText;
+    public TextMeshProUGUI LoginErrorText;
     public Image ErrorBg;
 
 
@@ -70,9 +70,15 @@ public class LoginController : MonoBehaviour
             yield return request.SendWebRequest();
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log(request.error);
+                if(request.responseCode == 404)
+                {
+                    LoginErrorText.text = "Incorrect username or password.";
+                }
+                else
+                {
+                    LoginErrorText.text = "Fail to communicate with the server.";
+                }
                 ErrorBg.GetComponent<Image>().color = new Color32(255, 215, 210, 255); //Red Color Message
-                IncorrectPasswordErrorText.text = "Incorrect username or password.";
                 yield break;
             }
             else
